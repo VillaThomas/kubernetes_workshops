@@ -1,12 +1,12 @@
 # Quickstart
 
-## PrÈrequis
+## Pr√©requis
 
-- Avoir un cluster opÈrationnel ainsi que kubectl configurÈ pour intÈragir ave ce cluster
+- Avoir un cluster op√©rationnel ainsi que kubectl configur√© pour int√©ragir ave ce cluster
 
 ## Lab
 
-Le conteneur utilisÈ pour ce lab est [Party-clippy](https://github.com/jessfraz/party-clippy). Il s'agit d'un petit serveur web qui Ècoute sur le port 8080.
+Le conteneur utilis√© pour ce lab est [Party-clippy](https://github.com/jessfraz/party-clippy). Il s'agit d'un petit serveur web qui √©coute sur le port 8080.
 
 Lancer l'application Party-clippy dans un conteneur.
 
@@ -18,14 +18,14 @@ kubectl run party-clippy --image=jessfraz/party-clippy:latest
 deployment "party-clippy" created
 ```
 
-Afficher les dÈploiements
+Afficher les d√©ploiements
 
 ```
 kubectl get deployments
 ```
 
 ```
-NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 party-clippy   1         1         1            1           1m
 ```
 
@@ -35,11 +35,11 @@ kubectl get pods
 ```
 
 ```
-NAME                        READY     STATUS    RESTARTS   AGE
+NAME                            READY     STATUS    RESTARTS   AGE
 party-clippy-3295177660-xg5t2   1/1       Running   0          55s
 ```
 
-VÈrifier les logs du conteneur, on utilise directement le nom du pod ci dessus.
+V√©rifier les logs du conteneur, on utilise directement le nom du pod ci dessus.
 
 ```
 kubectl logs party-clippy-3295177660-xg5t2
@@ -49,7 +49,7 @@ kubectl logs party-clippy-3295177660-xg5t2
 TODO METTRE LES LOGS
 ```
 
-Pour vÈrifier si party-clippy fonctionne bien, nous allons faire une redirection de port entre la machine et le conteneur.
+Pour v√©rifier si party-clippy fonctionne bien, nous allons faire une redirection de port entre la machine et le conteneur.
 
 ```
 kubectl port-forward party-clippy-3295177660-xg5t2 3000:8080
@@ -103,8 +103,8 @@ Party-clippy est maintenant accessible sans redirection de port.
 > kubectl get svc party-clippy -o yaml | grep nodePort
 > ```
 >
-> Cela donne un accËs ‡ Party-clippy via n'importe quel IP des noeuds du cluster, sur le port  
-> affichÈ sur la deuxiËme commande
+> Cela donne un acc√®s √† Party-clippy via n'importe quel IP des noeuds du cluster, sur le port  
+> affich√© sur la deuxi√®me commande
 
 ## Cleanup
 
