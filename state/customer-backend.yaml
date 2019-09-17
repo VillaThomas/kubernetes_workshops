@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - image: thomasvillaldea/customer-backend:latest
-        name: lobsters
+        name: customer-backend
         env:
         - name: POSTGRES_URL
           value: customer-db:5432/customer
