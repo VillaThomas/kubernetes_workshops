@@ -3,7 +3,7 @@
 ## Prérequis
 
 - Avoir un Docker installé sur l'environnement de travail utilisé
-- Avoir récupérer les dossiers customer et customer-db
+- Avoir récupérer le dossiers customer
 
 ## Dockerize Spring-boot app
 
