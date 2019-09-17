@@ -4,6 +4,6 @@ Name |
 ------------- |
 [Introduction](introduction) |
 [Quickstart](quickstart) | 
-[Dockerise](dockerize) | 
 [Core Kubernetes Concepts](core-concepts) | 
+[Dockerise](dockerize) | 
 [Storing State](state) |
