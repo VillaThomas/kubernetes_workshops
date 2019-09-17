@@ -20,7 +20,7 @@ spec:
         - name: POSTGRES_URL
           value: customer-db:5432/customer
         - name: POSTGRES_USER
-          value: root
+          value: backend
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
