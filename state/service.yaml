@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-backend
+  labels:
+    app: customer
+    tier: backend
+spec:
+  ports:
+    - port: 80
+      targetPort: web
+  selector:
+    app: customer
+    tier: backend
+  type: NodePort
