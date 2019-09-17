@@ -1,16 +1,16 @@
 # Dockerize and Registry
 
-## Prérequis
+## PrÃ©requis
 
-- Avoir un Docker installé sur l'environnement de travail utilisé
-- Avoir récupérer les dossiers customer et customer-db
+- Avoir un Docker installÃ© sur l'environnement de travail utilisÃ©
+- Avoir rÃ©cupÃ©rer les dossiers customer et customer-db
 
 ## Dockerize Spring-boot app
 
 Nous allons ici Dockerize une application Spring-Boot appeler pour pouvoir l'utiliser
 dans le lab suivant.
 
-On se rend dans le dossier [customer](customer) là où se situe notre [Dockerfile](customer/Dockerfile)
+On se rend dans le dossier [customer](customer) lÃ  oÃ¹ se situe notre [Dockerfile](customer/Dockerfile)
 
 ```
 docker build -t customer-backend:1.0 .
@@ -34,7 +34,7 @@ docker login
 Login Succeeded
 ```
 
-Ensuite pour créer un répository sur son compte : 
+Ensuite pour crÃ©er un rÃ©pository sur son compte : 
 
 ```
 docker tag local-image:tagname new-repo:tagname
@@ -58,11 +58,11 @@ df64d3292fd6: Pushed
 lastest: digest: sha256:dd8e9eae9028aef39f76750db47b779b1a6472fd97548c0769fd1f30b09f0b7e size: 1366
 ```
 
-Notre image est maintenant accessible de l'extérieur.
-Ici il s'agit d'un répository public accessible par tout le monde
-Mais il est possible d'utilisé des repo privée. Il en existe plusieurs comme
+Notre image est maintenant accessible de l'extÃ©rieur.
+Ici il s'agit d'un rÃ©pository public accessible par tout le monde
+Mais il est possible d'utilisÃ© des repo privÃ©e. Il en existe plusieurs comme
 la Docker Trust Registry (DTR), Harbor, Nexus, Artifactory...
 
 
-##Demo Harbor
+## Demo Harbor
 
