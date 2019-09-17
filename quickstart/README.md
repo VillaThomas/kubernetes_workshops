@@ -74,37 +74,14 @@ Faire Ctrl-c pour annuler la redirection.
 Maintenant nous allons ouvrir Party-clippy sur Internet
 
 ```
-kubectl expose deployment party-clippy --port=80 --target-port=8080 --type=LoadBalancer
+kubectl expose deployment party-clippy --port=8080 --type=NodePort
+kubectl get svc party-clippy -o yaml | grep nodePort
 ```
 
-```
-service "party-clippy" exposed
-```
-
-Get the external IP, this will take a minute. EXTERNAL-IP will be blank until the load balancer is ready.
-
-```
-kubectl get service party-clippy
-```
-
-```
-NAME           CLUSTER-IP    EXTERNAL-IP      PORT(S)   AGE
-party-clippy   10.3.241.32   1.2.3.4          80/TCP    1m
-```
-
-Depuis un navigateur visiter : `http://<external-ip>`
+Cela donne un accès à Party-clippy via n'importe quel IP des noeuds du cluster, sur le port  
+affiché sur la deuxième commande.
 
 Party-clippy est maintenant accessible sans redirection de port.
-
-> Sans LoadBalancer
->
-> ```
-> kubectl expose deployment party-clippy --port=8080 --type=NodePort
-> kubectl get svc party-clippy -o yaml | grep nodePort
-> ```
->
-> Cela donne un accès à Party-clippy via n'importe quel IP des noeuds du cluster, sur le port  
-> affiché sur la deuxième commande
 
 ## Cleanup
 

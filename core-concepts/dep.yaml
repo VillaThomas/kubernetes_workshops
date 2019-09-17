@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: party-clippy
+  labels:
+    app: party-clippy
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: party-clippy
+    spec:
+      containers:
+        - image: jessfraz/party-clippy:latest
+          name: party-clippy
+          ports:
+            - containerPort: 8080
+              name: web
