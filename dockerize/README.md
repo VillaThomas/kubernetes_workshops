@@ -60,7 +60,7 @@ lastest: digest: sha256:dd8e9eae9028aef39f76750db47b779b1a6472fd97548c0769fd1f30
 
 Notre image est maintenant accessible de l'extérieur.
 Ici il s'agit d'un répository public accessible par tout le monde
-Mais il est possible d'utilisé des repo privée. Il en existe plusieurs comme
+Mais il est possible d'utilisé des repo privée. Ils en existent plusieurs comme
 la Docker Trust Registry (DTR), Harbor, Nexus, Artifactory...
 
 
