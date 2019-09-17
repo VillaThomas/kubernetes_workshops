@@ -31,7 +31,7 @@ spec:
         tier: db
     spec:
       containers:
-        - image: ??? /customer-db:latest
+        - image: postgres:latest
           name: mysql
           env:
             - name: POSTGRES_PASSWORD
@@ -39,8 +39,10 @@ spec:
                 secretKeyRef:
                   name: db-pass
                   key: password
-            - name:
-              value: 
+            - name: POSTGRES_USER
+              value: backend
+            - name: POSTGRES_DB
+              value: customer            
           ports:
             - containerPort: 5432
               name: sql
