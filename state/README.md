@@ -99,6 +99,9 @@ service "customer-db" created
 deployment "customer-db" created
 ```
 
+TODO RENTRER DANS LA BASE AJOUTER LE SCHEMA ET UNE DONNEE
+
+
 Nous avons le fichier de déploiement [customer-backend.yaml](customer-backend.yaml) créé pour 
 se connecter à la base de donnée `customer-db`.
 Le mot de passe étant récupéré via un secret, ils seront toujours identiques entre la BDD et le Backend

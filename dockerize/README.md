@@ -58,7 +58,7 @@ df64d3292fd6: Pushed
 lastest: digest: sha256:dd8e9eae9028aef39f76750db47b779b1a6472fd97548c0769fd1f30b09f0b7e size: 1366
 ```
 
-Notre image est maintenant accessible de l'extérieur
+Notre image est maintenant accessible de l'extérieur.
 Ici il s'agit d'un répository public accessible par tout le monde
 Mais il est possible d'utilisé des repo privée. Il en existe plusieurs comme
 la Docker Trust Registry (DTR), Harbor, Nexus, Artifactory...
