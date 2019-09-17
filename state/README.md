@@ -1,14 +1,14 @@
 # Storing States
 
-## Prérequis
+## PrÃ©requis
 
-- Avoir un cluster opérationnel ainsi que kubectl configuré pour intéragir ave ce cluster
+- Avoir un cluster opÃ©rationnel ainsi que kubectl configurÃ© pour intÃ©ragir ave ce cluster
 
 ## Lab
 
-Nous utiliserons l'application Java crée précedement nommé Customer-Backend.  
+Nous utiliserons l'application Java crÃ©e prÃ©cedement nommÃ© Customer-Backend.  
 
-Créer un service pour 'application. Il sera utilisé tout au long du Lab.
+CrÃ©er un service pour 'application. Il sera utilisÃ© tout au long du Lab.
 
 ```
 kubectl create -f ./service.yaml
@@ -17,19 +17,19 @@ kubectl create -f ./service.yaml
 service "customer-backend" created
 ```
 
-Utiliser les commandes des labs précèdent pour retrouver l'ip et le node port de la machine.
+Utiliser les commandes des labs prÃ©cÃ¨dent pour retrouver l'ip et le node port de la machine.
 
 
-### Database et backend dans le même Pod
+### Database et backend dans le mÃªme Pod
 
-Lors de la création d'un pod, si la base de donnée et le backend se trouvent dans la 
-même image docker ou dans le même déploiement, on va être confronté à différentes problématique.
+Lors de la crÃ©ation d'un pod, si la base de donnÃ©e et le backend se trouvent dans la  
+mÃªme image docker ou dans le mÃªme dÃ©ploiement, on va Ãªtre confrontÃ© Ã  diffÃ©rentes problÃ©matiques.
 
-Si l'on scale le nombres de pods, chacun aura sa propre database. Lorsqu'une donnée sera persistée 
+Si l'on scale le nombres de pods, chacun aura sa propre database. Lorsqu'une donnÃ©e est persistÃ©e 
 elle ne le sera pas dans les autres databases.
 
 
-- Exemple de mise à l'échelle et de pertes des données ? (un pods avec BDD + backend) -> Expliquer des variables d'env
+- Exemple de mise Ã  l'Ã©chelle et de pertes des donnÃ©es ? (un pods avec BDD + backend) -> Expliquer des variables d'env
 
 ```
 kubectl create -f ./java-backend_bdd.yaml
@@ -38,7 +38,7 @@ kubectl create -f ./java-backend_bdd.yaml
 deployment "java-backend_bdd" created
 ```
 
-Supprimmer juste le déploiement:
+Supprimmer juste le dÃ©ploiement:
 
 ```
 kubectl delete -f ./java-backend_bdd.yaml
@@ -51,27 +51,28 @@ deployment "java-backend_bdd" deleted
 
 ### External Database in Kubernetes
 
-Le moyen le plus simple de laisser la database à l'extérieur du pods 
-contenant l'application, voir dans certain cas à l'extérieur du cluster 
+Le moyen le plus simple est de laisser la database Ã  l'extÃ©rieur du pods 
+contenant l'application, voir dans certain cas Ã  l'extÃ©rieur du cluster .
 
-Non allons donc déployer notre backend Java pour qu'il intéragissent 
-directement avec une base de donnée PostgresQL déployé dans un autre pods.
+Non allons donc dÃ©ployer notre backend Java pour qu'il intÃ©ragisse 
+directement avec une base de donnÃ©e PostgresQL dÃ©ployÃ©e dans un autre pod.
 
 Nous avons deux conteneurs :
 
-- Customer-Backend : Il va être utilisé pour requeter ou insérer des informations en base.
+- Customer-Backend : Il va Ãªtre utilisÃ© pour requeter ou insÃ©rer des informations en base.
 > On a 3 variables d'environment : 
-> - POSTGRES_URL: qui contient l'url de la BDD -> posgres-service:5432/customer
-> - POSTGRES_USER: qui contient le user de la BDD -> root
+> - POSTGRES_URL: qui contient l'url de la BDD -> customer-db:5432/customer
+> - POSTGRES_USER: qui contient le user de la BDD -> backend
 > - POSTGRES_PASSWORD: qui contient le password de la BDD
 
-- Customer-db : Il s'agit de la base de donnée PostgresQL
-> On a 2 variables d'environment : 
-> - POSTGRES_DB: qui contient le nom de la BSS -> posgres-service:5432/customer
+- Customer-db : Il s'agit de la base de donnÃ©e PostgresQL
+> On a 3 variables d'environment : 
+> - POSTGRES_DB: qui contient le nom de la BSS -> customer
+> - POSTGRES_USER: qui contient le user de la BDD -> backend
 > - POSTGRES_PASSWORD: qui contient le password de la BDD
 
-Créer un secret en utilisant la commande ci dessous. Remplacer `mypassword`
-par le password souhaité pour la base de donnée postgres.
+CrÃ©er un secret en utilisant la commande ci dessous. Remplacer `mypassword`
+par le password souhaitÃ© pour la base de donnÃ©e postgres.
 
 ```
 kubectl create secret generic db-pass --from-literal=password=mypassword
@@ -81,13 +82,13 @@ secret "db-pass" created
 ```
 
 Dans le fichier [customer-db.yaml](customer-db.yaml). Le fichier de 
-configuration va créer un service et un déployment de l'image de postgres 
-créer au lab précédent. On précise dans notre déploiement les différentes 
+configuration va crÃ©er un service et un dÃ©ployment de l'image de postgres 
+crÃ©er au lab prÃ©cÃ©dent. On prÃ©cise dans notre dÃ©ploiement les diffÃ©rentes 
 variables d'environnement. La variable du password est pris directement dans 
-le secret. Le service créé `customer-db` est resolvable comme une entrée DNS 
+le secret. Le service crÃ©Ã© `customer-db` est resolvable comme une entrÃ©e DNS 
 pour tous les Pod du cluster utilisant Kube DNS.
 
-Déployer la bdd :  
+DÃ©ployer la bdd :  
 
 ```
 kubectl create -f ./customer-db.yaml
@@ -98,9 +99,9 @@ service "customer-db" created
 deployment "customer-db" created
 ```
 
-Nous avons le fichier de déploiement [customer-backend.yaml](customer-backend.yaml) créé pour 
-se connecter à la base de donnée `customer-db`.
-Le mot de passe étant récupéré via un secret ils seront toujours identiques.
+Nous avons le fichier de dÃ©ploiement [customer-backend.yaml](customer-backend.yaml) crÃ©Ã© pour 
+se connecter Ã  la base de donnÃ©e `customer-db`.
+Le mot de passe Ã©tant rÃ©cupÃ©rÃ© via un secret, ils seront toujours identiques entre la BDD et le Backend
 
 ```
 kubectl create -f ./customer-backend.yaml
@@ -109,20 +110,20 @@ kubectl create -f ./customer-backend.yaml
 deployment "customer-backend" created
 ```
 
-Maintenant on peut tester d'accéder à notre application Customer-Backend pour vérifier 
-si nous avons bien les données dans la base et si nous pouvons en insérer.
+Maintenant on peut tester d'accÃ©der Ã  notre application Customer-Backend pour vÃ©rifier 
+si nous avons bien les donnÃ©es dans la base et si nous pouvons en insÃ©rer.
 
 - Inserer
-- Récupérer
+- RÃ©cupÃ©rer
 - Job pour lancer une init ???
 
-Le porblèmes est maintenant que ma base de donnée est dans mon 
-cluster Kubernetes, mais qu'aucune persitance des données n'est 
-configurée. Les données sont stocké à l'intérieur du conteneur.
+Le porblÃ¨mes est maintenant que ma base de donnÃ©e est dans mon 
+cluster Kubernetes, mais qu'aucune persitance des donnÃ©es n'est 
+configurÃ©e. Les donnÃ©es sont stockÃ©es Ã  l'intÃ©rieur du conteneur.
 Cela fonctionne tant que le noeud et le conteneur continue de 
-fonctionner. Kubernetes considère que les pods sont éphémère et 
-stateles. Si le noeud plante ou que le pod est supprimé, Kubernetes
-va rescheduler a un nouveau pods pour customer-db, mais les données
+fonctionner. Kubernetes considÃ¨re que les pods sont Ã©phÃ©mÃ¨re et 
+stateles. Si le noeud plante ou que le pod est supprimÃ©, Kubernetes
+va rescheduler a un nouveau pods pour customer-db, mais les donnÃ©es
 seront perdues.
 
 Supprimer le Deployment et le Service de la bdd : 
@@ -137,23 +138,16 @@ service "customer-db" deleted
 
 ### Database avec un Persistent Volume
 
-Pour faire tourner une bdd dans Kubernetes, en gardant les données
+Pour faire tourner une bdd dans Kubernetes, en gardant les donnÃ©es
 persistantes, il faut utiliser des Persitent Volume (PV). Il s'agit 
-d'un object Kubernetes qui correspond à un stockage externe. Il peut 
+d'un object Kubernetes qui correspond Ã  un stockage externe. Il peut 
 s'agir d'un disque, d'un NFS, d'iSCSI, on-premise ou dans le cloud. 
-Il existe de nombreux plugins 
+Il existe de nombreux plugins. 
 
-To run the database inside Kubernetes, but keep the data persistent,
-we will use a Persistent Volume (PV), which is a Kubernetes object
-that usually refers to an external storage device. This is typically a
-resilient cloud disk in clouds, or an NFS or iSCSI disk in on-premise
-clusters.
-
-Ici nous allons créer un Persistent Volume, directement sur le noeud
+Ici nous allons crÃ©er un Persistent Volume, directement sur le noeud
 (`hostPath` type). Cela ne fonctionne que dans un contexte single Node.
-Utiliser le fichier [local-pv.yaml](local-pv.yaml) pour créer un PV qui 
+Utiliser le fichier [local-pv.yaml](local-pv.yaml) pour crÃ©er un PV qui 
 pointe sur `/tmp/pg-disk` sur notre noeud
-
 
 ```
 kubectl create -f ./local-pv.yaml
@@ -188,11 +182,11 @@ Source:
 ```
 
 Dans le ficher [customer-db-pvc.yaml](customer-db-pvc.yaml],nous 
-avons rajouter un object Persitent Volume Claim (PVC). Un PVC va réclamer
-à ce qu'on lui associe un PV dans le cluster correspondant à ses éxigences.
-Cela permet de ne pas avoir ses configurations à l'interéieur d'un déploiemet.
+avons rajouter un object Persitent Volume Claim (PVC). Un PVC va rÃ©clamer
+Ã  ce qu'on lui associe un PV dans le cluster correspondant Ã  ses Ã©xigences.
+Cela permet de ne pas avoir ses configurations Ã  l'intÃ©rieur d'un dÃ©ploiemet.
 
-Le PVC s'appelle `pg-pv-claim` et il est spécifié dans le Deployment.
+Le PVC s'appelle `pg-pv-claim` et il est spÃ©cifiÃ© dans le Deployment.
 On monte ensuite ce volume dans `/var/lib/postgresql/data`.
 
 ```
@@ -223,7 +217,7 @@ pg-pv-claim   Bound     local-pv-1   2Gi       RWO           7s
 ```
 
 
-Vérifier si tout fonctionne correctement. Redémarrer des pods, scaler etc..
+VÃ©rifier si tout fonctionne correctement (RedÃ©marrer des pods, scaler etc..)
 
 ## Cleanup
 
@@ -245,8 +239,6 @@ kubectl get pv
 NAME         CAPACITY   ACCESSMODES   STATUS     CLAIM                    REASON    AGE
 local-pv-1   2Gi        RWO           Released   default/pg-pv-claim             4m
 ```
-
-You can see it is now released.
 
 ```
 kubectl delete pv local-pv-1
