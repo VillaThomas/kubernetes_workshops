@@ -39,7 +39,7 @@ Il est ensuite possible d'intérragir directement avec le cluster en passant le 
 kubectl --kubeconfig kube_config_cluster.yml get all --all-namespaces
 ```
 
-##Ajouter les configurations du Cluster
+## Ajouter les configurations du Cluster
 
 Pour éviter de devoir préciser à chaque fois le fichier de configuration pour interagir avec le cluster, mettre dans le dossier «~/.kube/ » le fichier kube_config_cluster.yml avec comme nouveau nom « kube-workshop ».
 
