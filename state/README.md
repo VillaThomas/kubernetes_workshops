@@ -128,6 +128,8 @@ INSERT INTO customer(id, username, name) VALUES (1, 'john', 'DOE');
 SELECT * FROM customer;
 ```
 
+Une fois la base de données déployée, nous allons déployer le backend
+
 Nous avons le fichier de déploiement [customer-backend.yaml](customer-backend.yaml).
 
 Les variables d'environnement vont permettre au backend de se connecter à la base de donnée `customer-db`.
@@ -143,18 +145,20 @@ deployment "customer-backend" created
 Maintenant on peut tester d'accéder à notre application Customer-Backend pour vérifier 
 si nous avons bien les données dans la base et si nous pouvons en insérer.
 
-- Inserer
-- Récupérer
-- Job pour lancer une init ???
+```
+curl http://127.0.0.1:31663/customers
+```
 
-Le porblèmes est maintenant que ma base de donnée est dans mon 
+
+Le prblème est maintenant que ma base de donnée est dans mon 
 cluster Kubernetes, mais qu'aucune persitance des données n'est 
 configurée. Les données sont stockées à l'intérieur du conteneur.
 Cela fonctionne tant que le noeud et le conteneur continue de 
 fonctionner. Kubernetes considère que les pods sont éphémère et 
-stateles. Si le noeud plante ou que le pod est supprimé, Kubernetes
+stateless. Si le noeud plante ou que le pod est supprimé, Kubernetes
 va rescheduler a un nouveau pods pour customer-db, mais les données
-seront perdues.
+seront perdues. De même si je scale ma bdd les donnée ne seront présentes 
+que sur un seul pod.
 
 Supprimer le Deployment et le Service de la bdd : 
 
@@ -162,7 +166,7 @@ Supprimer le Deployment et le Service de la bdd :
 kubectl delete deployment,svc customer-db
 ```
 ```
-deployment "customer-db" deleted
+deployment.extensions "customer-db" deleted
 service "customer-db" deleted
 ```
 
@@ -190,25 +194,32 @@ persistentvolume "local-pv-1" created
 kubectl get pv
 ```
 ```
-NAME         CAPACITY   ACCESSMODES   STATUS      CLAIM     REASON    AGE
-local-pv-1   2Gi        RWO           Available                       17s
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+local-pv-1   2Gi        RWO            Retain           Available                                   13s
 ```
 ...
 ```
 kubectl describe pv local-pv-1
 ```
 ```
-Name:		local-pv-1
-Labels:		type=local
-Status:		Available
-Claim:		
-Reclaim Policy:	Retain
-Access Modes:	RWO
-Capacity:	2Gi
-Message:	
+Name:            local-pv-1
+Labels:          type=local
+Annotations:     <none>
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:
+Status:          Available
+Claim:
+Reclaim Policy:  Retain
+Access Modes:    RWO
+VolumeMode:      Filesystem
+Capacity:        2Gi
+Node Affinity:   <none>
+Message:
 Source:
-    Type:	HostPath (bare host directory volume)
-    Path:	/tmp/pg-disk
+    Type:          HostPath (bare host directory volume)
+    Path:          /tmp/pg-disk
+    HostPathType:
+Events:            <none>
 ```
 
 Dans le ficher [customer-db-pvc.yaml](customer-db-pvc.yaml],nous 
@@ -234,18 +245,19 @@ On peut maintenant voir que le PVC est bound au PV :
 kubectl get pv
 ```
 ```
-NAME         CAPACITY   ACCESSMODES   STATUS    CLAIM                    REASON    AGE
-local-pv-1   2Gi        RWO           Bound     default/pg-pv-claim             3m
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   REASON   AGE
+local-pv-1   2Gi        RWO            Retain           Bound    default/pg-pv-claim                           19s
 ```
 ...
 ```
 kubectl get pvc
 ```
 ```
-NAME          STATUS    VOLUME       CAPACITY   ACCESSMODES   AGE
-pg-pv-claim   Bound     local-pv-1   2Gi       RWO           7s
+NAME          STATUS   VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+pg-pv-claim   Bound    local-pv-1   2Gi        RWO                           5m13s
 ```
 
+Remettre la table et ses données dans la bdd.
 
 Vérifier si tout fonctionne correctement (Redémarrer des pods, scaler etc..)
 
@@ -257,8 +269,8 @@ kubectl delete svc,deployment,job,pvc -l app=customer
 ```
 service "customer-backend" deleted
 service "customer-db" deleted
-deployment "customer-backend" deleted
-deployment "customer-db" deleted
+deployment.extensions "customer-backend" deleted
+deployment.extensions "customer-db" deleted
 persistentvolumeclaim "pg-pv-claim" deleted
 ```
 
@@ -266,8 +278,8 @@ persistentvolumeclaim "pg-pv-claim" deleted
 kubectl get pv
 ```
 ```
-NAME         CAPACITY   ACCESSMODES   STATUS     CLAIM                    REASON    AGE
-local-pv-1   2Gi        RWO           Released   default/pg-pv-claim             4m
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                 STORAGECLASS   REASON   AGE
+local-pv-1   2Gi        RWO            Retain           Released   default/pg-pv-claim                           8m1s
 ```
 
 ```
