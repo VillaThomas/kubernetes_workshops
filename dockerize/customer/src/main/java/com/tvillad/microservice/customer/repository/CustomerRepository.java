@@ -1,6 +1,6 @@
-package com.atridou.microservice.customer.repository;
+package com.tvillald.microservice.customer.repository;
 
-import com.atridou.microservice.customer.entity.Customer;
+import com.tvillald.microservice.customer.entity.Customer;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

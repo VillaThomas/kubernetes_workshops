@@ -1,4 +1,4 @@
-package com.atridou.microservice.customer.entity;
+package com.tvillad.microservice.customer.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

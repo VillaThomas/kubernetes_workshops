@@ -12,7 +12,6 @@ spec:
   selector:
     app: customer
     tier: db
-  clusterIP: None
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -59,9 +58,9 @@ spec:
           ports:
             - containerPort: 5432
               name: sql
-            volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/postgresql/data
+          volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/postgresql/data
       volumes:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
