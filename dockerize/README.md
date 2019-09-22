@@ -66,3 +66,6 @@ la Docker Trust Registry (DTR), Harbor, Nexus, Artifactory...
 
 ## Demo Harbor
 
+## Registries and Rancher
+
+## Helm
