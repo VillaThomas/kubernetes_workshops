@@ -12,7 +12,6 @@ spec:
   selector:
     app: customer
     tier: db
-  clusterIP: None
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
