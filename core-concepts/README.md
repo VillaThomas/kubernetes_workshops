@@ -307,8 +307,8 @@ kubectl create -f ./dep.yaml,./service.yaml
 ```
 
 ```
-deployment "party-clippy" created
-service "party-clippy" created
+deployment.extensions/hello created
+service/hello created
 ```
 
 Les Deployments contrôlet et créent des Replica Sets (comme des RCs).
@@ -319,19 +319,93 @@ kubectl get rs -o wide
 ```
 
 ```
-NAME                  DESIRED   CURRENT   AGE       CONTAINER(S)   IMAGE(S)                             SELECTOR
-party-clippy-1901432027   5         5         47s       party-clippy       jessfraz/party-clippy:latest   app=party-clippy,pod-template-hash=1901432027
+NAME              DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES                        SELECTOR
+hello-59f79686d   5         5         5       16s   hello        nginxdemos/hello:plain-text   app=hello,pod-template-hash=59f79686d
 ```
 
-- Rollout ? (exemple kubectl rollout history deployment/nginx-deployment)
- (kubectl rollout history deployment/nginx-deployment --revision=2)
-- Replicat Sets ?
+```
+kubectl rollout status deployment/hello
+```
+
+```
+deployment "hello" successfully rolled out
+```
+
+```
+kubectl rollout history deployment/hello
+```
+```
+deployment.extensions/hello
+REVISION  CHANGE-CAUSE
+1         <none>
+```
+
+Editer le tag de l'image utilisé et la remplacer par  : 
+```
+kubectl edit deployment hello
+```
+```
+deployment.extensions/hello edited
+```
+
+```
+kubectl rollout history deployment/hello
+```
+```
+deployment.extensions/hello
+REVISION  CHANGE-CAUSE
+1         <none>
+2         <none>
+```
+
+```
+kubectl rollout history deployment/hello --revision 1
+```
+```
+deployment.extensions/hello with revision #1
+Pod Template:
+  Labels:       app=hello
+        pod-template-hash=59f79686d
+  Containers:
+   hello:
+    Image:      nginxdemos/hello:plain-text
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+```
+
+```
+kubectl rollout history deployment/hello --revision 2
+```
+```
+deployment.extensions/hello with revision #2
+Pod Template:
+  Labels:       app=hello
+        pod-template-hash=6f988c549f
+  Containers:
+   hello:
+    Image:      nginxdemos/hello:0.2-plain-text
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+```
 
 
 ## Cleanup
 
-Supprimer tous ce qui a été créés dans ce lab où le label `app` est égal à `party-clippy`. 
+Supprimer tous ce qui a été créés dans ce lab où le label `app` est égal à `hello`. 
 
 ```
-kubectl delete pod,rc,svc,deployment -l app=party-clippy
+kubectl delete pod,svc,deployment -l app=hello
+```
+```
+pod "hello-6f988c549f-2qpdm" deleted
+pod "hello-6f988c549f-dk9dk" deleted
+pod "hello-6f988c549f-w67kk" deleted
+service "hello" deleted
+deployment.extensions "hello" deleted
 ```
