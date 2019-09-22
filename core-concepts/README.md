@@ -168,7 +168,7 @@ pod "hello" deleted
 service "hello" deleted
 ```
 
-### Deployment
+### Replication Controller
 
 Lorsque qu'un pod est supprimé, cela est irréversibe. Le pod peut aussi disparaitre
 si le le noeud du cluster fail ou si l'application crashe. L'application ne redémarrera pas.
@@ -176,27 +176,27 @@ La solution est d'utiliser le Replication Controller,ou RC fournit par kubernete
 Le RC va s'assurer que le nombre de pods souhaité tourne toujours dans les différents
 noeuds du cluster.
 
-Voici la définitions du RC : [rc.yaml]()
+Voici la définitions du RC : [rc.yaml](rc.yaml)
 
-Démarrer Party-clippy en utilisant un RC. On utilisera le même service que précèdemment :
+Démarrer Hello en utilisant un RC. On utilisera le même service que précèdemment :
 
 ```
 kubectl create -f ./rc.yaml,./service.yaml
 ```
 
 ```
-replicationcontroller "party-clippy" created
-service "party-clippy" created
+replicationcontroller/hello created
+service/hello created
 ```
 
 Vérifier le node port du service :
 
 ```
-kubectl get svc party-clippy -o yaml | grep nodePort
+kubectl get svc hello -o yaml | grep nodePort
 ```
 
 ```
-  - nodePort: 31388
+  - nodePort: 30572
 ```
 
 
@@ -214,30 +214,30 @@ kubectl get pods -o wide
 ```
 
 ```
-NAME                 READY     STATUS    RESTARTS   AGE       NODE
-party-clippy-jf0xs   1/1       Running   0          2m        Node1
+NAME          READY   STATUS    RESTARTS   AGE   IP           NODE   
+hello-jz8qr   1/1     Running   0          38s   10.42.0.16   test11
 ```
 
 Le pod a été créé par le replication controller. Maintenant, essayer
 de supprimer le pod, en utilisant le nom exacte du pod :
 
 ```
-kubectl delete pod party-clippy-jf0xs
+kubectl delete pod hello-jz8qr
 ```
 
 ```
-pod "party-clippy-jf0xs" deleted
+pod "hello-jz8qr" deleted
 ```
 
-Re-vérifier le pod :
+Re-vérifier les pods :
 
 ```
 kubectl get pods -o wide
 ```
 
 ```
-NAME               READY     STATUS    RESTARTS   AGE       NODE
-party-clippy-t1vwk   1/1       Running   0          6s      Node1
+NAME          READY   STATUS    RESTARTS   AGE   IP           NODE 
+hello-vgkkp   1/1     Running   0          19s   10.42.0.17   test1
 ```
 
 Un nouveau pod a été créé. Il peut être schéduler dans un n'importe quel noeud.
@@ -245,11 +245,11 @@ Un nouveau pod a été créé. Il peut être schéduler dans un n'importe quel n
 Pour scaler l'application, il suffit de préciser le nombre de réplicat souhaité :
 
 ```
-kubectl scale --replicas=5 rc party-clippy
+kubectl scale --replicas=5 rc hello
 ```
 
 ```
-replicationcontroller "party-clippy" scaled
+replicationcontroller/hello scaled
 ```
 
 Vérifier les pods
@@ -259,37 +259,37 @@ kubectl get pods -o wide
 ```
 
 ```
-NAME             READY     STATUS              RESTARTS   AGE       NODE
-party-clippy-32ona   1/1       Running             0          26s       Node1
-party-clippy-8twm0   1/1       Running             0          2m        Node1
-party-clippy-hhves   0/1       ContainerCreating   0          26s       Node1
-party-clippy-lv5km   0/1       ContainerCreating   0          26s       Node1
-party-clippy-tlojp   0/1       ContainerCreating   0          26s       Node1
+NAME          READY   STATUS    RESTARTS   AGE   IP           NODE 
+hello-94szh   1/1     Running   0          34s   10.42.0.18   test1
+hello-m4w7g   1/1     Running   0          34s   10.42.0.19   test1
+hello-tsl56   1/1     Running   0          34s   10.42.0.20   test1
+hello-vgkkp   1/1     Running   0          90s   10.42.0.17   test1
+hello-zch4s   1/1     Running   0          34s   10.42.0.21   test1
 ```
 
 ainsi que le RC
 
 ```
-kubectl get rc party-clippy -o wide
+kubectl get rc hello -o wide
 ```
 
 ```
-NAME       DESIRED   CURRENT   AGE       CONTAINER(S)   IMAGE(S)                             SELECTOR
-party-clippy   5         5         3m        party-clippy       jessfraz/party-clippy:latest   app=party-clippy
+NAME    DESIRED   CURRENT   READY   AGE     CONTAINERS   IMAGES                        SELECTOR
+hello   5         5         5       3m32s   hello        nginxdemos/hello:plain-text   app=hello
 ```
 
-Le service party-clippy va rediriger le traffic entre les 5 pods qui correspondent
-au sélector app=party-clippy.
+Le service hello va rediriger le traffic entre les 5 pods qui correspondent
+au sélector app=hello
 
 
-Supprime les Replication Controllers et les Services, où le label `app` est égal à `party-clippy`.
+Supprimer les Replication Controllers et les Services, où le label `app` est égal à `party-clippy`.
 
 ```
-kubectl delete rc,svc -l app=party-clippy
+kubectl delete rc,svc -l app=hello
 ```
 ```
-replicationcontroller "party-clippy" deleted
-service "party-clippy" deleted
+replicationcontroller "hello" deleted
+service "hello" deleted
 ```
 Pas besoin de supprimer les pods, cela sera fait en supprimant le RC.
 
@@ -300,7 +300,7 @@ Ils managent le déploiement de Replica Sets, permettant de les mettre à jour r
 On a un historique des rollout et il est possible de faire un rollback.
 
 
-Démarrer party-clippy en utilisant le fichier de déploiement suivant : [dep.yaml](dep.yaml).
+Démarrer hello en utilisant le fichier de déploiement suivant : [dep.yaml](dep.yaml).
 
 ```
 kubectl create -f ./dep.yaml,./service.yaml
