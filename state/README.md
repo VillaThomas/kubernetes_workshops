@@ -6,7 +6,7 @@
 
 ## Lab
 
-Nous utiliserons l'application Java crée précedement nommé Customer-Backend.  
+Nous utiliserons l'application Java crée précedement nommé Customer.  
 
 Créer un service pour 'application. Il sera utilisé tout au long du Lab.
 
@@ -14,7 +14,7 @@ Créer un service pour 'application. Il sera utilisé tout au long du Lab.
 kubectl create -f ./service.yaml
 ```
 ```
-service "customer-backend" created
+service/customer-backend created
 ```
 
 Utiliser les commandes des labs précèdent pour retrouver l'ip et le node port de la machine.
@@ -23,31 +23,10 @@ Utiliser les commandes des labs précèdent pour retrouver l'ip et le node port 
 ### Database et backend dans le même Pod
 
 Lors de la création d'un pod, si la base de donnée et le backend se trouvent dans la  
-même image docker ou dans le même déploiement, on va être confronté à différentes problématiques.
+même image docker ou dans le même pod, on va être confronté à différentes problématiques.
 
 Si l'on scale le nombres de pods, chacun aura sa propre database. Lorsqu'une donnée est persistée 
 elle ne le sera pas dans les autres databases.
-
-
-- Exemple de mise à l'échelle et de pertes des données ? (un pods avec BDD + backend) -> Expliquer des variables d'env
-
-```
-kubectl create -f ./java-backend_bdd.yaml
-```
-```
-deployment "java-backend_bdd" created
-```
-
-Supprimmer juste le déploiement:
-
-```
-kubectl delete -f ./java-backend_bdd.yaml
-```
-```
-deployment "java-backend_bdd" deleted
-```
-
-???
 
 ### External Database in Kubernetes
 
@@ -64,6 +43,8 @@ Nous avons deux conteneurs :
 > - POSTGRES_URL: qui contient l'url de la BDD -> customer-db:5432/customer
 > - POSTGRES_USER: qui contient le user de la BDD -> backend
 > - POSTGRES_PASSWORD: qui contient le password de la BDD
+
+Expose le port 8080
 
 - Customer-db : Il s'agit de la base de donnée PostgresQL
 > On a 3 variables d'environment : 
@@ -93,17 +74,63 @@ Déployer la bdd :
 ```
 kubectl create -f ./customer-db.yaml
 ```
+```
+service/customer-db created
+deployment.extensions/customer-db created
+```
+
+Nous allons maintenant créer un schéma et insérer des données dans la bdd.
+Pour cela nous allons rentrer directement dans le conteneur, soit grâce à l'IHM
+de Rancher, soit grâce à Kubectl.
 
 ```
-service "customer-db" created
-deployment "customer-db" created
+kubectl get pods
+```
+```
+NAME                           READY   STATUS    RESTARTS   AGE
+customer-db-8647b67b8f-h22d8   1/1     Running   0          7m48s
 ```
 
-TODO RENTRER DANS LA BASE AJOUTER LE SCHEMA ET UNE DONNEE
+```
+kubectl exec -it customer-db-8647b67b8f-h22d8 /bin/bash
+```
+```
+root@customer-db-8647b67b8f-h22d8:/#
+```
 
+La commande pour se connecter à la base est :
 
-Nous avons le fichier de déploiement [customer-backend.yaml](customer-backend.yaml) créé pour 
-se connecter à la base de donnée `customer-db`.
+```
+psql DBNAME USERNAME
+```
+
+Par rapport aux variables d'environnements définies cela donne : 
+
+```
+psql customer backend
+```
+```
+psql (11.5 (Debian 11.5-1.pgdg90+1))
+Type "help" for help.
+
+customer=#
+```
+
+On passe les commandes de création d'une table et de données : 
+
+```
+CREATE TABLE customer(
+   id serial PRIMARY KEY,
+   username VARCHAR (50) UNIQUE NOT NULL,
+   name VARCHAR (355) UNIQUE NOT NULL
+);
+INSERT INTO customer(id, username, name) VALUES (1, 'john', 'DOE');
+SELECT * FROM customer;
+```
+
+Nous avons le fichier de déploiement [customer-backend.yaml](customer-backend.yaml).
+
+Les variables d'environnement vont permettre au backend de se connecter à la base de donnée `customer-db`.
 Le mot de passe étant récupéré via un secret, ils seront toujours identiques entre la BDD et le Backend
 
 ```
