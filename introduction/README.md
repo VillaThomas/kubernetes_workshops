@@ -3,7 +3,6 @@
 ## Prérequis
 
 - SSH accès à la machine d'un noeud
-- le Fichier Kubeconfig du cluster
 - L'url et les crédentials de Rancher.
 
 ## Se connecter à la machine
@@ -33,26 +32,24 @@ chmod +x ./kubectl
 sudo mv ./kubectl /usr/local/bin/kubectl
 kubectl version
 ```
-Il est ensuite possible d'intérragir directement avec le cluster en passant le fichier de configuration en paramètre.
+
+Récupérer le fichier Kubeconfig 
 
 ```
-kubectl --kubeconfig kube_config_cluster.yml get all --all-namespaces
+kubectl --kubeconfig <NOM DU FICHIER> --all-namespaces
 ```
 
 ## Ajouter les configurations du Cluster
 
-Pour éviter de devoir préciser à chaque fois le fichier de configuration pour interagir avec le cluster, mettre dans le dossier «~/.kube/ » le fichier kube_config_cluster.yml avec comme nouveau nom « kube-workshop ».
-
-Exporter la variable suivante :
+Pour éviter de devoir préciser à chaque fois le fichier de configuration pour interagir avec le cluster, mettre «~/.kube/ » le fichier kube_config_cluster.yml avec comme nouveau nom « config ».
 
 ```
-export KUBECONFIG=~/.kube/kube-workshop
+kubectl version
 ```
 
-Choisir le contexte avec kubectl pour préciser quel cluster à administrer :
-
 ```
-kubectl config use-context local
+Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.0", GitCommit:"2bd9643cee5b3b3a5ecbd3af49d09018f0773c77", GitTreeState:"clean", BuildDate:"2019-09-18T14:36:53Z", GoVersion:"go1.12.9", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.6", GitCommit:"96fac5cd13a5dc064f7d9f4f23030a6aeface6cc", GitTreeState:"clean", BuildDate:"2019-08-19T11:05:16Z", GoVersion:"go1.12.9", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 Vérifier en récupérant les noeuds du cluster.
@@ -64,6 +61,3 @@ kubectl get nodes
 ## Rancher
 
 Se connecter à l'IHM de Rancher et naviguer.
-
-
-
