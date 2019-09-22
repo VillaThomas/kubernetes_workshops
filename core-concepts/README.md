@@ -12,10 +12,10 @@ Via l'IHM de Rancher, nous allons créer un namespace `hello` dans le project `D
 
 ### Pods
 
-Créer un pod à partir du fichier [pod.yaml](pod.yaml). 
+Créer un pod à partir du fichier [pod_ns.yaml](pod_ns.yaml). 
 
 ```
-kubectl create -f ./pod.yaml
+kubectl create -f ./pod_ns.yaml
 ```
 
 ```
@@ -113,49 +113,59 @@ Le pod est supprimé définitivement. La même chose se serait produit si l'éxe
 
 ### Service
 
-Pour accéder à Party-clippy depuis l'exterrieur du cluster, nous allons devoir créer un service. Le service définit par [service.yaml](service.yaml) 
-va rediriger le traffic sur chaque pod avec le label `app: party-clippy`. Le service est sur le port 80 et 
-redirige sur le port 8080,  labelisé `web` dans la définition du conteneur.
+Pour accéder à Hello depuis l'exterrieur du cluster, nous allons devoir créer un service. Le service définit par [service.yaml](service.yaml) va rediriger le traffic sur chaque pod avec le label `app: hello`. Le service est sur le port 80 et 
+redirige sur le port 80,  labelisé `web` dans la définition du conteneur.
 La `type: NodePort` va permettre d'accéder au service à partir d'un port qui sera accessible depuis n'importe quel noeud.
 
-Create the service and pod:
+Dans cette exemple nous utiliserons le namespace par défaut.
+
+Créer le pod et le service:
 
 ```
 kubectl create -f ./service.yaml,./pod.yaml
 ```
 
 ```
-service "party-clippy" created
-pod "party-clippy" created
+service/hello created
+pod/hello created
 ```
 
 Vérifier le node port du service :
 
 ```
-kubectl get svc party-clippy -o yaml | grep nodePort
+kubectl get svc hello -o yaml | grep nodePort
 ```
 
 ```
-  - nodePort: 31418
+  - nodePort: 30552
 ```
 
 
 Vérifier en essayant un curl avec le port récupéré :
 
 ```
-  curl http://localhost:31418
-```
-
-
-Supprimer les pods et les Services où le label `app` est égal à `party-clippy`. 
-
-```
-kubectl delete pod,svc -l app=party-clippy
+curl http://127.0.0.1:30552
 ```
 
 ```
-pod "party-clippy" deleted
-service "party-clippy" deleted
+Server address: 10.42.0.15:80
+Server name: hello
+Date: 22/Sep/2019:16:46:49 +0000
+URI: /
+Request ID: db4bb96f82dce5cc42d8c4dcd130ecce
+```
+
+Essayons de comprendre à quoi correspond l'adresse serveur.
+
+Supprimer les pods et les Services où le label `app` est égal à `hello`. 
+
+```
+kubectl delete pod,svc -l app=hello
+```
+
+```
+pod "hello" deleted
+service "hello" deleted
 ```
 
 ### Replication Controller
