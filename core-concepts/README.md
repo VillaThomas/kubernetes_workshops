@@ -168,7 +168,7 @@ pod "hello" deleted
 service "hello" deleted
 ```
 
-### Replication Controller
+### Deployment
 
 Lorsque qu'un pod est supprimé, cela est irréversibe. Le pod peut aussi disparaitre
 si le le noeud du cluster fail ou si l'application crashe. L'application ne redémarrera pas.
