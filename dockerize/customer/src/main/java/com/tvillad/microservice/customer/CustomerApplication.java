@@ -1,4 +1,4 @@
-package com.tvillad.microservice.customer;
+package com.tvillald.microservice.customer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
