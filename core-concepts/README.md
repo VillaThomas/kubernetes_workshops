@@ -203,7 +203,7 @@ kubectl get svc hello -o yaml | grep nodePort
 Vérifier en essayant un curl avec le port récupéré :
 
 ```
-  curl http://localhost:31388
+  curl http://localhost:30572
 ```
 
 
@@ -282,7 +282,7 @@ Le service hello va rediriger le traffic entre les 5 pods qui correspondent
 au sélector app=hello
 
 
-Supprimer les Replication Controllers et les Services, où le label `app` est égal à `party-clippy`.
+Supprimer les Replication Controllers et les Services, où le label `app` est égal à `hello`.
 
 ```
 kubectl delete rc,svc -l app=hello
@@ -295,7 +295,7 @@ Pas besoin de supprimer les pods, cela sera fait en supprimant le RC.
 
 ### Deployments
 
-Les Deployments sont très simmilaires aux RC.
+Les Deployments sont très similaires aux RC.
 Ils managent le déploiement de Replica Sets, permettant de les mettre à jour rapidement.
 On a un historique des rollout et il est possible de faire un rollback.
 
